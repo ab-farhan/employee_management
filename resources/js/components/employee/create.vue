@@ -235,7 +235,7 @@ import moment from 'moment';
                       'birth_date':this.formatDate(this.formData.birth_date),
                       'date_hired':this.formatDate(this.formData.date_hired),
                   }).then(res=>{
-                      console.log(res)
+                      this.$router.push({name:'EmployeesIndex'});   
                   }).catch(error=>{
                        console.log(console.error)
                   })

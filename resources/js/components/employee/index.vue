@@ -6,7 +6,7 @@
     <form method="GET" action="" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" >
         
         <div class="input-group">
-            <input type="search" class="form-control bg-light  small" name="search" placeholder="Search for employee">
+            <input type="search" class="form-control bg-light  small" placeholder="Search for employee" v-model="search">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit">
                     <i class="fas fa-search fa-sm"></i>
@@ -43,6 +43,13 @@
     <h1 class="h3 mb-0 text-gray-800">Employees</h1>
     
 </div>
+    <div class="row justify-content-center" v-if="isDelete">
+        <div class="col-lg-5">
+            <div class="alert alert-success" role="alert">
+                {{message}}
+            </div>
+        </div>
+    </div>
  <!-- DataTales Example -->
  <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -54,11 +61,12 @@
             <table class="table table-bordered" id="" width="100%">
                 <thead>
                     <tr>
-                        <th>Id </th>
+                        <th># Id </th>
                         <th>Full Name</th>
-                        <th>Address</th>
                         <th>Department</th>
+                        <th>Country</th>
                         <th>State</th>
+                        <th>Joining Date</th>
                         <th>Manage</th>
                     </tr>
                 </thead>
@@ -67,14 +75,14 @@
                    
                     <tr v-for="employee in employees" :key="employee.id">
                         <th> {{employee.id}} </th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>  </td>
+                        <td> {{employee.first_name}} {{employee.middle_name}} {{employee.last_name}} </td>
+                        <td>{{employee.department.name}}</td>
+                        <td>{{employee.country.name}}</td>
+                        <td>{{employee.state.name}}</td>
+                        <td>{{employee.hired_date}}</td>
                         <td>
-                            <a href="" class="btn "><i class="fas fa-eye text-success"></i></a>
-                            <a href="" class="btn"><i class="fas fa-edit"></i></a> 
-
+                            <router-link class="btn btn-success" :to="{name:'EmployeesEdit',params:{id:employee.id}}"><i class="fas fa-edit "></i> </router-link>
+                            <button class="btn btn-danger" @click="deleteEmployee(employee.id)"><i class="fas fa-trash"></i> </button> 
                         </td>                     
                     </tr>
 
@@ -91,6 +99,8 @@
        data(){
            return{
                employees:[],
+               isDelete:false,
+               message:'',
            }
        },
        created(){
@@ -105,6 +115,17 @@
                .catch(error =>{
                    console.log(error)
                })
+           },
+           deleteEmployee(id){
+               axios.delete('/api/employees/'+id)
+                .then(res =>{
+                    this.getEmplyees();
+                    this.isDelete=true;
+                    this.message= res.data;
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
            }
        }
     }
