@@ -6,12 +6,18 @@
     <form method="GET" action="" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" >
         
         <div class="input-group">
-            <input type="search" class="form-control bg-light  small" placeholder="Search for employee" v-model="search">
+            <input type="search" class="form-control bg-light  small" placeholder="Search for employee" v-model.lazy="search">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" type="button">
                     <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
+           
+            <select class="form-control" id="department_id" name="department_id" v-model="selectedDepartment">
+                <option disabled selected>Select Department</option>
+                <option v-for="department in departments" :key="department.id" :value="department.id">{{department.name}}</option>
+            </select>
+            
         </div>
     </form>
 
@@ -101,14 +107,31 @@
                employees:[],
                isDelete:false,
                message:'',
+               search:'',
+               selectedDepartment:null,
+               departments:[],
            }
        },
        created(){
            this.getEmplyees();
+           this.getDepartments();
+       },
+       watch:{
+           search(){
+               this.getEmplyees();
+           },
+           selectedDepartment(){
+                this.getEmplyees();
+           }
        },
        methods:{
            getEmplyees(){
-               axios.get('/api/employees')
+               axios.get('/api/employees',{
+                   params:{
+                       search:this.search,
+                       department_id:this.selectedDepartment,
+                   }
+               })
                .then(res =>{
                    this.employees=res.data
                })
@@ -126,7 +149,15 @@
                 .catch(error =>{
                     console.log(error)
                 })
-           }
+           },
+           getDepartments(){
+                axios.get('/api/employees/departments')
+                .then(res =>{
+                    this.departments =res.data
+                }).catch(error=>{
+                    console.log(console.error)
+                })
+            }
        }
     }
 </script>

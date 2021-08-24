@@ -1994,18 +1994,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2121,17 +2109,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -2501,22 +2478,45 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       employees: [],
       isDelete: false,
-      message: ''
+      message: '',
+      search: '',
+      selectedDepartment: null,
+      departments: []
     };
   },
   created: function created() {
     this.getEmplyees();
+    this.getDepartments();
+  },
+  watch: {
+    search: function search() {
+      this.getEmplyees();
+    },
+    selectedDepartment: function selectedDepartment() {
+      this.getEmplyees();
+    }
   },
   methods: {
     getEmplyees: function getEmplyees() {
       var _this = this;
 
-      axios.get('/api/employees').then(function (res) {
+      axios.get('/api/employees', {
+        params: {
+          search: this.search,
+          department_id: this.selectedDepartment
+        }
+      }).then(function (res) {
         _this.employees = res.data;
       })["catch"](function (error) {
         console.log(error);
@@ -2532,6 +2532,15 @@ __webpack_require__.r(__webpack_exports__);
         _this2.message = res.data;
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    getDepartments: function getDepartments() {
+      var _this3 = this;
+
+      axios.get('/api/employees/departments').then(function (res) {
+        _this3.departments = res.data;
+      })["catch"](function (error) {
+        console.log(console.error);
       });
     }
   }
@@ -60341,35 +60350,6 @@ var staticRenderFns = [
           "navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
       },
       [
-        _c(
-          "form",
-          {
-            staticClass:
-              "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search",
-            attrs: { method: "GET", action: "" }
-          },
-          [
-            _c("div", { staticClass: "input-group" }, [
-              _c("input", {
-                staticClass: "form-control bg-light  small",
-                attrs: {
-                  type: "search",
-                  name: "search",
-                  placeholder: "Search for employee"
-                }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "input-group-append" }, [
-                _c(
-                  "button",
-                  { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-                  [_c("i", { staticClass: "fas fa-search fa-sm" })]
-                )
-              ])
-            ])
-          ]
-        ),
-        _vm._v(" "),
         _c("ul", { staticClass: "navbar-nav ml-auto" }, [
           _c("li", { staticClass: "nav-item dropdown no-arrow" }, [
             _c(
@@ -61076,35 +61056,6 @@ var staticRenderFns = [
           "navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
       },
       [
-        _c(
-          "form",
-          {
-            staticClass:
-              "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search",
-            attrs: { method: "GET", action: "" }
-          },
-          [
-            _c("div", { staticClass: "input-group" }, [
-              _c("input", {
-                staticClass: "form-control bg-light  small",
-                attrs: {
-                  type: "search",
-                  name: "search",
-                  placeholder: "Search for employee"
-                }
-              }),
-              _vm._v(" "),
-              _c("div", { staticClass: "input-group-append" }, [
-                _c(
-                  "button",
-                  { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-                  [_c("i", { staticClass: "fas fa-search fa-sm" })]
-                )
-              ])
-            ])
-          ]
-        ),
-        _vm._v(" "),
         _c("ul", { staticClass: "navbar-nav ml-auto" }, [
           _c("li", { staticClass: "nav-item dropdown no-arrow" }, [
             _c(
@@ -61209,25 +61160,71 @@ var render = function() {
                 directives: [
                   {
                     name: "model",
-                    rawName: "v-model",
+                    rawName: "v-model.lazy",
                     value: _vm.search,
-                    expression: "search"
+                    expression: "search",
+                    modifiers: { lazy: true }
                   }
                 ],
                 staticClass: "form-control bg-light  small",
                 attrs: { type: "search", placeholder: "Search for employee" },
                 domProps: { value: _vm.search },
                 on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
+                  change: function($event) {
                     _vm.search = $event.target.value
                   }
                 }
               }),
               _vm._v(" "),
-              _vm._m(0)
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.selectedDepartment,
+                      expression: "selectedDepartment"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { id: "department_id", name: "department_id" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.selectedDepartment = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { disabled: "", selected: "" } }, [
+                    _vm._v("Select Department")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.departments, function(department) {
+                    return _c(
+                      "option",
+                      {
+                        key: department.id,
+                        domProps: { value: department.id }
+                      },
+                      [_vm._v(_vm._s(department.name))]
+                    )
+                  })
+                ],
+                2
+              )
             ])
           ]
         ),
@@ -61373,7 +61370,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "input-group-append" }, [
       _c(
         "button",
-        { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+        { staticClass: "btn btn-primary", attrs: { type: "button" } },
         [_c("i", { staticClass: "fas fa-search fa-sm" })]
       )
     ])
