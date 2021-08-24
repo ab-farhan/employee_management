@@ -7,4 +7,4 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-<h4>Here is only Employee <b>CRUD</b> and search create with vue js (version 2) </h4>
+<h4>Here is only Employee <b>CRUD</b> and search create with vue js (version 2) Others create with blade file.</h4>
